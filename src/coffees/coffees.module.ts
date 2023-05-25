@@ -6,6 +6,7 @@ import { Coffee } from './entities/coffee.entitiy';
 import { Flavor } from './entities/flavor.entity';
 import { Event } from 'src/events/entities/event.entity';
 import { COFFEE_BRANDS } from './coffees.constants';
+import { Connection } from 'typeorm';
 
 class ConfigService {}
 class DevelopmentConfigService {}
@@ -23,9 +24,18 @@ class ProductionConfigService {}
           ? DevelopmentConfigService
           : ProductionConfigService,
     },
+    // Asynchronous "useFactory" (async provider example)
     {
       provide: COFFEE_BRANDS,
-      useValue: ['buddy brew', 'nescafe'],
+      // Note "async" here, and Promise/Async event inside the Factory function
+      // Could be a database connection / API call / etc
+      // In our case we're just "mocking" this type of event with a Promise
+      useFactory: async (connection: Connection): Promise<string[]> => {
+        // const coffeeBrands = await connection.query('SELECT * ...');
+        const coffeeBrands = await Promise.resolve(['buddy brew', 'nescafe']);
+        return coffeeBrands;
+      },
+      inject: [Connection],
     },
   ],
   exports: [CoffeesService],
