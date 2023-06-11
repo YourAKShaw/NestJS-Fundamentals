@@ -11,6 +11,10 @@ import { Coffee, CoffeeSchema } from './entities/coffee.entitiy';
         name: Coffee.name,
         schema: CoffeeSchema,
       },
+      {
+        name: 'Event',
+        schema: CoffeeSchema,
+      },
     ]),
   ],
   controllers: [CoffeesController],
