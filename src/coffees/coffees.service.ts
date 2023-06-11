@@ -8,7 +8,8 @@ import { Flavor } from './entities/flavor.entity';
 import { Event } from '../events/entities/event.entity';
 import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto';
 import { COFFEE_BRANDS } from './coffees.constants';
-import { ConfigService } from '@nestjs/config';
+import { ConfigService, ConfigType } from '@nestjs/config';
+import coffeesConfig from './config/coffees.config';
 
 @Injectable()
 export class CoffeesService {
@@ -20,13 +21,27 @@ export class CoffeesService {
     private readonly flavorRepository: Repository<Flavor>,
     private readonly dataSource: DataSource,
     @Inject(COFFEE_BRANDS) coffeeBrands: string[],
+    @Inject(coffeesConfig.KEY)
+    private coffeesConfiguration: ConfigType<typeof coffeesConfig>,
   ) {
     /**
      * Grabbing this nested property within our App
      * via "dot notation" (a.b)
      */
-    const databaseHost = this.configService.get('database.host', 'localhost');
-    console.log(databaseHost);
+    // const databaseHost = this.configService.get('database.host', 'localhost');
+    // console.log(databaseHost);
+    // ---------
+    // ⚠️ sub optimal ways of retrieving Config ⚠️
+    // /* Grab coffees config within App */
+    // const coffeesConfig = this.configService.get('coffees');
+    // console.log(coffeesConfig);
+    // /* Grab nested property within coffees config */
+    // const foo = this.configService.get('coffees.foo');
+    // console.log(foo);
+    // ---------
+    // 💡 Optimal / Best-practice 💡
+    // Now strongly typed, and able to access properties via:
+    console.log(coffeesConfiguration.foo);
   }
 
   findAll(paginationQuery: PaginationQueryDto) {
